@@ -1,4 +1,8 @@
 require "bundler"
+require "shellwords"
+require "fileutils"
+require "tmpdir"
+
 RAILS_REQUIREMENT = "~> 6.0.0".freeze
 
 def apply_template!
@@ -186,7 +190,6 @@ end
 # In that case, use `git clone` to download them to a local temporary dir.
 def add_template_repository_to_source_path
   if __FILE__ =~ %r{\Ahttps?://}
-    require "tmpdir"
     source_paths.unshift(tempdir = Dir.mktmpdir("rails-app-template-sustainable-"))
     at_exit { FileUtils.remove_entry(tempdir) }
     git clone: [
