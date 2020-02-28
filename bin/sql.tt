@@ -1,0 +1,1 @@
+PGPASSWORD=postgres psql -U postgres -h db -p 5432 <%= app_name %>_development

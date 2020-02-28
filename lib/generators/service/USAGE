@@ -1,0 +1,12 @@
+Description:
+    Create a new Service class in app/services and an associated test.
+
+Example:
+    rails generate service Analyzer [quick_scan [detailed_analysis]] [--module Insights]
+
+    This will create:
+        app/services/insights/analyzer.rb
+        test/services/insights/analyzer_test.rb
+
+    There will be two methods, quick_scan, and detailed_analysis
+

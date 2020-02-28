@@ -1,0 +1,12 @@
+<% module_namespacing do -%>
+class <%= class_name %>Job < ApplicationJob
+  def perform(some_arg, trace_id = nil)
+    log :perform, "(#{some_arg})"
+
+    set_trace_id(trace_id)
+
+    # Do your thing here
+
+  end
+end
+<% end -%>

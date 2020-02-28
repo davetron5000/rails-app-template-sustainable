@@ -1,0 +1,42 @@
+# Ignore bundler config.
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore uploaded files in development.
+/storage/*
+!/storage/.keep
+
+# Ignore assets copied into public for local dev
+/public/assets
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+# Ignore packs copied to public for local dev
+/public/packs
+# Ignore packs copied to public for local testing
+/public/packs-test
+# Ignore node_modules because WHOA
+/node_modules
+# Yarn error log is ephemeral
+/yarn-error.log
+
+# Ignore the .env file because it applies to both
+# dev and test and this is never what we want and
+# leads to broken hearts and empty databases
+.env
+
+# .env.development.local and the like are for actual secrets
+# we need in local dev so we don't want that checked in
+.env.*.local
+
+# Ignore vim session files
+Session.vim
+
+# Ignore vim swap files
+.*.sw?

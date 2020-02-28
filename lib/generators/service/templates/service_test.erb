@@ -1,0 +1,14 @@
+<% if @module_name.present? %>
+module <%= @module_name.camelize %>
+<% end %>
+class <% if @module_name.present? %><%= @module_name.camelize %>::<% end %><%= class_name %>Test < ActiveSupport::TestCase
+
+  setup do
+    @<%= class_name.underscore %> = <%= class_name %>.new
+  end
+
+  test "it does a thing" do
+    not_implemented!
+  end
+
+end

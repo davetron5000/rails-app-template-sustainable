@@ -1,0 +1,18 @@
+<% if @module_name.present? %>
+module <%= @module_name.camelize %>
+end
+<% end %>
+class <% if @module_name.present? %><%= @module_name.camelize %>::<% end %><%= class_name %> < ApplicationService
+
+<% for method in methods %>
+  def <%= method %>(args,go,here)
+    raise "not implemented"
+  end
+<% end %>
+
+private
+
+  class Result
+    # Create your rich result class here
+  end
+end

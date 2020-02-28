@@ -1,0 +1,1 @@
+bin/rails db:rollback && bin/rails db:rollback RAILS_ENV=test
