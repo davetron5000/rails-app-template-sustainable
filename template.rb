@@ -66,6 +66,7 @@ def apply_template!
   copy_file "lib/rails_ext/active_record_timestamps_uses_timestamp_with_time_zone.rb"
   copy_file "lib/templates/rails/job/job.rb.tt"
   copy_file "config/initializers/postgres.rb"
+  copy_file "config/initializers/sidekiq.rb"
 
   gsub_file "config/environments/production.rb",
     "config.log_level = :debug",
@@ -126,10 +127,36 @@ def apply_template!
 
   copy_file "test/lint_factories_test.rb"
 
-  run "bundle install"
-  run "yarn install"
+  docker_based_dev = if ENV["DEV_ENV"].nil?
+                       yes?("Docker-based dev environment? (set DEV_ENV to true in your environment to auto-answer 'yes' to this question)")
+                     else
+                       ENV["DEV_ENV"] == "true"
+                     end
+  if docker_based_dev
+    template "dev-environment/docker-compose.yml.tt"
+    copy_file "dev-environment/Dockerfile"
+    copy_file "dev-environment/bin/build"
+    copy_file "dev-environment/bin/start"
+    copy_file "dev-environment/bin/exec"
+    copy_file "dev-environment/README.md"
 
-  run_with_clean_bundler_env "bundle binstubs foreman sidekiq brakeman"
+    after_bundle do
+      run "rm -rf node_modules"
+    end
+
+    puts "Since you are using a Docker-based dev environment, we arent running `bin/setup`."
+    puts "You must run that in the Docker container via:"
+    puts
+    puts "  cd dev-environment"
+    puts "  bin/start"
+    puts
+    puts "Then, in another terminal"
+    puts
+    puts "  cd dev-environment"
+    puts "  bin/exec bin/setup"
+  else
+    run_with_clean_bundler_env "bin/setup"
+  end
 
 end
 
@@ -179,7 +206,7 @@ def assert_valid_options
     end
     actual = options[key]
     unless actual == expected
-      fail Rails::Generators::Error, "Unsupported option: #{key}=#{actual}"
+      fail Rails::Generators::Error, "Unsupported option: #{key}=#{actual}\n\nYou must run with --skip-listen --skip-spring --skip-turbolinks"
     end
   end
 end

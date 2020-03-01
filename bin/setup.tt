@@ -27,6 +27,9 @@ def setup
   log "Clearing Sidekiq Queues"
   system!("bin/rails sidekiq:reset")
 
+  log "Ensuring binstubs are created"
+  system!("bundle binstubs foreman sidekiq brakemane")
+
   log "All set up."
   log ""
   log "To see commonly-needed commands, run:"
