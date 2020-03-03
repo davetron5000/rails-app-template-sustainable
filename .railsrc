@@ -1,0 +1,4 @@
+--skip-turbolinks
+--skip-spring
+--skip-listen
+--database=postgresql

@@ -1,6 +1,0 @@
-set -e
-
-docker build -t $TAG ./
-
-echo "🌈 Your Docker image has been built tagged '${TAG}'"
-# vim: ft=bash

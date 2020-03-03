@@ -5,13 +5,25 @@ This is a Rails Application Template that will create a Rails app set up similar
 
 ## To use
 
+### From The Internets
+
 ```
-DEV_ENV=true bin/rails new my-app \
+bin/rails new my-app \
+    --skip-bundle \
     --skip-turbolinks \
     --skip-spring \
     --skip-listen \
     --database=postgresql \
     --template=https://raw.githubusercontent.com/davetron5000/rails-app-template-sustainable/master/template.rb
+```
+
+### Locally
+
+```
+git clone https://github.com/davetron5000/rails-app-template-sustainable
+rails new my-app \
+      --rc=rails-app-template-sustainable/.railsrc \
+      --template=rails-app-template-sustainable/template.rb
 ```
 
 ## What you get
@@ -55,29 +67,25 @@ In particular:
   - A method `sanity_check` to allow sanity-checking assertions in tests
   - A method `not_implemented!` to allow skipping a test you have no implemented
   - A test to lint all your factories
-  - An optional Docker-based development environment
-
-## Docker-based Development
-
-If you specified `DEV_ENV=true` (or said yes when asked about a Docker-based development environment), you will
-get a direectory `dev-environment` that contains a `README.md` explaining how to use the Docker-based development
-environment.
 
 ## FAQ
 
 Literally no one has asked me questions, but here are a few
 
-* Spring works, right?
+* Spring works though right?
   - It creates an unstable development environment that manifests as odd and hard-to-diagnose behavior.  It will
   sap the time and resources of more tenured engineers on your team.  It is not worth it.
-* Turbolinks my site feel *slower*?
+  - This behavior is not how I would define "works".
+* Turbolinks makes my site feel…*slower*?
   - Because Turbolinks does not provide any loading animations or progress, any controller method that responds in
   less than 100ms (including network round trip) will make your app appear broken and slow, because it breaks the
   cognitive link between clicking a link and seeing something happen.  A controller that takes 1 second to respond
-  will feel faster and more reliable because the *browser* responds.  This should be the default behavior of your
-  app, so removing Turbolinks restores that default.
+  when Turbolink is not enabled will feel faster and more reliable because the *browser* responds instantly.  This should be the default behavior of your app and you should control when and how you want to optimize page performance.
 * But I don't want (or can't) use Postgres!
   - Sorry about that.  This template assumes you are using Postgres.
 * I want to use RSpec!
   - I'm not stopping you from doing that.  You can install RSpec and run its generator and get rid of minitest if
   you like.  It won't make much difference to the success of your project, but it's cool. Go for it.
+* Some other gems should be listed here
+  - I only want stuff you would need pretty much always, and that implies a small list of gems.  I also want to
+  be careful about gem debt, because each dependency you add is a carrying cost.

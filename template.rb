@@ -126,38 +126,6 @@ def apply_template!
     end
 
   copy_file "test/lint_factories_test.rb"
-
-  docker_based_dev = if ENV["DEV_ENV"].nil?
-                       yes?("Docker-based dev environment? (set DEV_ENV to true in your environment to auto-answer 'yes' to this question)")
-                     else
-                       ENV["DEV_ENV"] == "true"
-                     end
-  if docker_based_dev
-    template "dev-environment/docker-compose.yml.tt"
-    copy_file "dev-environment/Dockerfile"
-    copy_file "dev-environment/bin/build"
-    copy_file "dev-environment/bin/start"
-    copy_file "dev-environment/bin/exec"
-    copy_file "dev-environment/README.md"
-
-    after_bundle do
-      run "rm -rf node_modules"
-    end
-
-    puts "Since you are using a Docker-based dev environment, we arent running `bin/setup`."
-    puts "You must run that in the Docker container via:"
-    puts
-    puts "  cd dev-environment"
-    puts "  bin/start"
-    puts
-    puts "Then, in another terminal"
-    puts
-    puts "  cd dev-environment"
-    puts "  bin/exec bin/setup"
-  else
-    run_with_clean_bundler_env "bin/setup"
-  end
-
 end
 
 def run_with_clean_bundler_env(cmd)
@@ -190,7 +158,6 @@ end
 def assert_valid_options
   valid_options = {
     skip_gemfile: false,
-    skip_bundle: false,
     skip_git: false,
     skip_system_test: false,
     skip_test: false,
