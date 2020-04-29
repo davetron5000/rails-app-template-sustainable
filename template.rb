@@ -72,7 +72,7 @@ def apply_template!
     "config.log_level = :debug",
     "config.log_level = :info"
 
-  insert_into_file "config/routes.rb", 
+  insert_into_file "config/routes.rb",
     "require \"sidekiq/web\"\n\n",
     before: "Rails.application.routes.draw do"
 
@@ -204,6 +204,56 @@ def gemfile_requirement(name)
   @original_gemfile ||= IO.read("Gemfile")
   req = @original_gemfile[/gem\s+['"]#{name}['"]\s*(,[><~= \t\d\.\w'"]*)?.*$/, 1]
   req && req.gsub("'", %(")).strip.sub(/^,\s*"/, ', "')
+end
+
+require "thor"
+class Thor::Actions::InjectIntoFile
+
+protected
+
+  # Copied from lib/thor/actions/inject_into_file.rb so I can 
+  # raise if the regexp fails
+  def replace!(regexp, string, force)
+    return if pretend?
+    content = File.read(destination)
+    if force || !content.include?(replacement)
+      # BEGIN CHANGE
+      result = content.gsub!(regexp, string)
+      if result.nil?
+        raise "Regexp didn't match: #{regexp}:\n#{string}"
+      end
+      # END CHANGE
+      # ORIGINAL CODE
+      # content.gsub!(regexp, string)
+      # END ORIGINAL CODE
+      File.open(destination, "wb") { |file| file.write(content) }
+    end
+  end
+end
+
+module Thor::Actions
+  # Copied from lib/thor/actions/file_manipulation.rb
+  def gsub_file(path, flag, *args, &block)
+    return unless behavior == :invoke
+    config = args.last.is_a?(Hash) ? args.pop : {}
+
+    path = File.expand_path(path, destination_root)
+    say_status :gsub, relative_to_original_destination_root(path), config.fetch(:verbose, true)
+
+    unless options[:pretend]
+      content = File.binread(path)
+      # BEGIN CHANGE
+      result = content.gsub!(flag, *args, &block)
+      if result.nil?
+        raise "Regexp didn't match #{flag}:\n#{content}"
+      end
+      # END CHANGE
+      # ORIGINAL CODE
+      # content.gsub!(flag, *args, &block)
+      # END ORIGINAL CODE
+      File.open(path, "wb") { |file| file.write(content) }
+    end
+  end
 end
 
 apply_template!
