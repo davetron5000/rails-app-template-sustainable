@@ -5,7 +5,7 @@ class <%= class_name %>Job < ApplicationJob
 
     set_trace_id(trace_id)
 
-    # Do your thing here
+    raise "Job not implemented"
 
   end
 end
