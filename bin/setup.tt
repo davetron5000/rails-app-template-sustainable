@@ -1,36 +1,37 @@
 #!/usr/bin/env ruby
 
 def setup
-  log "Installing gems"
+  verify_local_database_config!
+  log "💎 Installing gems"
   # Only do bundle install if the much-faster
   # bundle check indicates we need to
   system! "bundle check || bundle install"
 
-  log "Installing Node modules"
+  log "☕️ Installing Node modules"
   # Only do yarn install if the much-faster
   # yarn check indicates we need to. Note that
   # --check-files is needed to force Yarn to actually
   # examine what's in node_modules
   system! "bin/yarn check --check-files || bin/yarn install"
 
-  log "Dropping & recreating the development database"
+  log "🚧  Dropping & recreating the development database"
   # Note that the very first time this runs, db:reset
   # will fail, but this failure is fixed by
   # doing a db:migrate
   system! "bin/rails db:reset || bin/rails db:migrate"
 
-  log "Dropping & recreating the test database"
+  log "🧪 Dropping & recreating the test database"
   # Setting the RAILS_ENV explicitly to be sure
   # we actually reset the test database
   system!({ "RAILS_ENV" => "test" }, "bin/rails db:reset")
 
-  log "Clearing Sidekiq Queues"
-  system!("bin/rails sidekiq:reset")
+  log "💰 Flushing all Redis databases"
+  system!("bin/rails redis:reset")
 
-  log "Ensuring binstubs are created"
-  system!("bundle binstubs foreman sidekiq brakemane")
+  log "🗑 Ensuring binstubs are created"
+  system!("bundle binstubs foreman sidekiq brakeman")
 
-  log "All set up."
+  log "🎉 All set up! 🎉"
   log ""
   log "To see commonly-needed commands, run:"
   log ""
@@ -87,6 +88,40 @@ end
 # instead of puts to communicate with the user
 def log(message)
   puts "[ bin/setup ] #{message}"
+end
+
+def verify_local_database_config!
+  rails_root = Pathname(__FILE__).dirname / ".."
+
+  found_at_least_one_potentially_remote_database = false
+
+  [
+    ".env.development",
+    ".env.development.local",
+    ".env.test",
+    ".env.test.local",
+  ].each do |dotenv_file|
+    path_to_dotenv_file = rails_root / dotenv_file
+    if File.exists?(path_to_dotenv_file)
+      database_urls = contents = File.read(path_to_dotenv_file).split(/\n/).reject{ |line|
+        line =~ /^#/
+      }.select { |line|
+        line =~ /^[^=]*DATABASE_URL=/
+      }
+      database_urls.each do |database_url|
+        var_name, connection_string = database_url.split("=",2)
+        if connection_string =~ /amazonaws.com/
+          found_at_least_one_potentially_remote_database = true
+          log "❗️ #{var_name} in #{dotenv_file} seems to point to a non-local database"
+        end
+      end
+    end
+  end
+  if found_at_least_one_potentially_remote_database
+    log "‼️  There was at least one configured database that's not local"
+    log "‼️  Running setup could blow away a real database. Please modify your .env files"
+    exit 1
+  end
 end
 
 # end of helpers

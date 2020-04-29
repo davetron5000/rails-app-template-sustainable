@@ -1,1 +1,6 @@
+#!/bin/sh
+
+set -e 
+
+echo "[ bin/release ] Running migrations"
 bin/rails db:migrate
