@@ -34,7 +34,7 @@ def apply_template!
   remove_file "config/database.yml"
   remove_file "config/secrets.yml"
 
-  template "lib/tasks/sidekiq.rake.tt"
+  template "lib/tasks/redis.rake.tt"
 
   insert_into_file "config/application.rb",
     before: /^  end\s*$/ do
