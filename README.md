@@ -64,7 +64,7 @@ In particular:
   putting code in `app/services`
   - All `datetime` fields in migrations uses `timestamp with time zone` which is the proper type in Postgres.
   - Log level in production set to INFO, as DEBUG is too verbose and causes some libraries to leak secrets
-  - A method `sanity_check` to allow sanity-checking assertions in tests
+  - A method `confidence_check` to allow sanity-checking assertions in tests
   - A method `not_implemented!` to allow skipping a test you have no implemented
   - A test to lint all your factories
 

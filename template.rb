@@ -109,9 +109,9 @@ def apply_template!
       [
         "include FactoryBot::Syntax::Methods",
         "",
-        "  # Used to indicate assertions that sanity check test",
+        "  # Used to indicate assertions that confidence check test",
         "  # set up conditions",
-        "  def sanity_check(context=nil, &block)",
+        "  def confidence_check(context=nil, &block)",
         "    block.()",
         "  rescue Exception",
         "    puts context.inspect",
