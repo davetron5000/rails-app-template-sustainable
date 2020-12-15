@@ -1,7 +1,9 @@
 # rails-app-template-sustainable
 
 This is a Rails Application Template that will create a Rails app set up similarly to the one outlined in
-[Sustinable Web Development with Ruby on Rails](https://sustainable-rails.com).
+[Sustainable Web Development with Ruby on Rails](https://sustainable-rails.com).
+
+**This is for Rails 6.1 only!**
 
 ## To use
 
@@ -63,9 +65,8 @@ In particular:
   - A simple base `ApplicationService` and a service class generator `bin/rails g service MyThing` to encourage
   putting code in `app/services`
   - All `datetime` fields in migrations uses `timestamp with time zone` which is the proper type in Postgres.
-  - Log level in production set to INFO, as DEBUG is too verbose and causes some libraries to leak secrets
-  - A method `confidence_check` to allow sanity-checking assertions in tests
-  - A method `not_implemented!` to allow skipping a test you have no implemented
+  - A method `confidence_check` to allow validating assumptions in tests separate from asserting code behavior.
+  - A method `not_implemented!` to allow skipping a test you have not implemented
   - A test to lint all your factories
 
 ## FAQ
@@ -80,7 +81,7 @@ Literally no one has asked me questions, but here are a few
   - Because Turbolinks does not provide any loading animations or progress, any controller method that responds in
   less than 100ms (including network round trip) will make your app appear broken and slow, because it breaks the
   cognitive link between clicking a link and seeing something happen.  A controller that takes 1 second to respond
-  when Turbolink is not enabled will feel faster and more reliable because the *browser* responds instantly.  This should be the default behavior of your app and you should control when and how you want to optimize page performance.
+  when Turbolinks is not enabled will feel faster and more reliable because the *browser* responds instantly.  This should be the default behavior of your app and you should control when and how you want to optimize page performance.
 * But I don't want (or can't) use Postgres!
   - Sorry about that.  This template assumes you are using Postgres.
 * I want to use RSpec!

@@ -3,7 +3,7 @@ require "shellwords"
 require "fileutils"
 require "tmpdir"
 
-RAILS_REQUIREMENT = "~> 6.0.0".freeze
+RAILS_REQUIREMENT = "~> 6.1.0".freeze
 
 def apply_template!
 
@@ -68,10 +68,6 @@ def apply_template!
   copy_file "config/initializers/postgres.rb"
   copy_file "config/initializers/sidekiq.rb"
 
-  gsub_file "config/environments/production.rb",
-    "config.log_level = :debug",
-    "config.log_level = :info"
-
   insert_into_file "config/routes.rb",
     "require \"sidekiq/web\"\n\n",
     before: "Rails.application.routes.draw do"
@@ -92,7 +88,7 @@ def apply_template!
   copy_file "app/jobs/application_job.rb", force: true
   copy_file "app/services/application_service.rb", force: true
 
-  insert_into_file "test/test_helper.rb", after: "require 'rails/test_help'" do
+  insert_into_file "test/test_helper.rb", after: "require \"rails/test_help\"" do
     [
       "",
       "require \"minitest/autorun\"",
