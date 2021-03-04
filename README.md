@@ -16,7 +16,7 @@ bin/rails new my-app \
     --skip-spring \
     --skip-listen \
     --database=postgresql \
-    --template=https://raw.githubusercontent.com/davetron5000/rails-app-template-sustainable/master/template.rb
+    --template=https://raw.githubusercontent.com/davetron5000/rails-app-template-sustainable/main/template.rb
 ```
 
 ### Locally
