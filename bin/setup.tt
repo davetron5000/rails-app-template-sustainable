@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require "pathname"
+
 def setup
   verify_local_database_config!
   log "💎 Installing gems"

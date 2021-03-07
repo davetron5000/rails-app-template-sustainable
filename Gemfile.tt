@@ -33,6 +33,10 @@ gem "bundler-audit"
 # it's a bit easier to deal with in prod
 gem "lograge"
 
+# Since Ruby 3, this is required but not
+# installed by default
+gem "rexml"
+
 # sidekiq is for background job processing
 gem "sidekiq"
 
