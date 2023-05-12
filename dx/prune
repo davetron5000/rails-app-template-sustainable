@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+. ${SCRIPT_DIR}/setupkit.sh.lib
+. ${SCRIPT_DIR}/dx.sh.lib
+
+usage_on_help "Prune containers for this repo" "command" ${@}
+ensure_docker_compose_env
+
+for container_id in `docker container ls -a -f "name=^${PROJECT_NAME}-.*-1$" --format="{{.ID}}"`; do
+  log "🗑" "Removing container with id '${container_id}'"
+  docker container rm ${container_id}
+done
+echo "🧼" "Containers removed"
+
+# vim: ft=bash

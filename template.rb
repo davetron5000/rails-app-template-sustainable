@@ -3,7 +3,7 @@ require "shellwords"
 require "fileutils"
 require "tmpdir"
 
-RAILS_REQUIREMENT = "~> 6.1.0".freeze
+RAILS_REQUIREMENT = "~> 7.0.4.3".freeze
 
 def apply_template!
 
@@ -13,7 +13,16 @@ def apply_template!
   assert_valid_options
   assert_postgres
 
-  template "Gemfile.tt", force: true
+  gem "brakeman"
+  gem "bundler-audit"
+  gem "lograge"
+  gem "sidekiq"
+  gem_group :development, :test do
+    gem "dotenv-rails"
+    gem "factory_bot_rails"
+    gem "foreman"
+    gem "faker"
+  end
 
   template "README.md.tt", force: true
   remove_file "README.rdoc"
@@ -122,6 +131,7 @@ def apply_template!
     end
 
   copy_file "test/lint_factories_test.rb"
+  clean_up_gemfile
 end
 
 def run_with_clean_bundler_env(cmd)
@@ -159,9 +169,6 @@ def assert_valid_options
     skip_test: false,
     skip_test_unit: false,
     edge: false,
-    skip_listen: true,
-    skip_spring: true,
-    skip_turbolinks: true,
   }
   valid_options.each do |key, expected|
     if expected == false
@@ -169,7 +176,7 @@ def assert_valid_options
     end
     actual = options[key]
     unless actual == expected
-      fail Rails::Generators::Error, "Unsupported option: #{key}=#{actual}\n\nYou must run with --skip-listen --skip-spring --skip-turbolinks"
+      fail Rails::Generators::Error, "Unsupported option: #{key}=#{actual}"
     end
   end
 end
@@ -194,12 +201,6 @@ def add_template_repository_to_source_path
   else
     source_paths.unshift(File.dirname(__FILE__))
   end
-end
-
-def gemfile_requirement(name)
-  @original_gemfile ||= IO.read("Gemfile")
-  req = @original_gemfile[/gem\s+['"]#{name}['"]\s*(,[><~= \t\d\.\w'"]*)?.*$/, 1]
-  req && req.gsub("'", %(")).strip.sub(/^,\s*"/, ', "')
 end
 
 require "thor"
